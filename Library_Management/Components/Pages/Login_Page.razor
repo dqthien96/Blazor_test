@@ -1,6 +1,41 @@
 ﻿@page "/login"
-<h3>Login_Page</h3>
-<PageTitle>Home</PageTitle>
-@code {
+@using Library_Management.Components.Models;
 
+<h1>Login</h1>
+
+@if (ErrorMessage != null)
+{
+    <p>@ErrorMessage</p>
+}
+
+<form @onsubmit="SubmitForm">
+    <label>Username:</label>
+    <input type="text" @bind="Username" /><br />
+    <label>Password:</label>
+    <input type="password" @bind="Password" /><br />
+    <button type="submit">Login</button>
+</form>
+
+@code {
+    private string Username { get; set; }
+    private string Password { get; set; }
+    private string ErrorMessage { get; set; }
+
+    [Inject]
+    private Service.UserService UserService { get; set; }
+
+    private async Task SubmitForm()
+    {
+        var user = await UserService.LoginAsync(Username, Password);
+        if (user != null)
+        {
+            // Redirect to home page or other authenticated page
+            // For now, just display user details
+            ErrorMessage = $"Welcome, {user.FullName} ({user.Role})";
+        }
+        else
+        {
+            ErrorMessage = "Invalid username or password";
+        }
+    }
 }

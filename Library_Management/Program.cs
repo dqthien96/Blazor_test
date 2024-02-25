@@ -1,10 +1,26 @@
 using Library_Management.Components;
+using Library_Management.Components.Data;
+using Library_Management.Components.Service;
+using Microsoft.Extensions.Configuration;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+//add service off project
+
+
+//Dbcontext
+//builder.Services.AddDbContext<Dbcontext>(options =>
+//       options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+
+//service User
+builder.Services.AddScoped<IUserService, UserService>();
+
 
 var app = builder.Build();
 
