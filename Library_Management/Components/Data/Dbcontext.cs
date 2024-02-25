@@ -8,9 +8,11 @@
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=your_server_ip;Database=your_database_name;User Id=your_username;Password=your_password;");
+            //optionsBuilder.UseSqlServer("Server=LAPTOP-P832L3NQ/SQLEXPRESS;Database=Library_data;User Id=;Password=;");
+            optionsBuilder.UseSqlServer("Server=LAPTOP-P832L3NQ/SQLEXPRESS;Database=Library_data;");
+
         }
- 
+
     }
 
 }
