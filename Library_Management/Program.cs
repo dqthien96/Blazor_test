@@ -19,7 +19,7 @@ builder.Services.AddRazorComponents()
 
 
 //service User
-builder.Services.AddScoped<IUserService, UserService>();
+//builder.Services.AddScoped<IUserService, UserService>();
 
 
 var app = builder.Build();

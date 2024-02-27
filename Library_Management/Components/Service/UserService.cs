@@ -1,24 +1,29 @@
-﻿using Library_Management.Components.Models;
+﻿using Library_Management.Components.Data;
+using Library_Management.Components.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library_Management.Components.Service
 {
-    public class UserService:IUserService
+    public class UserService : IUserService
     {
-        private readonly HttpClient _httpClient;
+        private readonly DbContext _dbContext;
 
-        public UserService(HttpClient httpClient)
+        public UserService(DbContext dbContext)
         {
-            _httpClient = httpClient;
+            _dbContext = dbContext;
         }
-        
-        public async Task<Users> LoginAsync(string username, string password)
+
+        public Task<Users> LoginAsync(string username, string password)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/user/login", new { username, password });
+          /*  var response = await dbcontext.ge("api/user/login", new { username, password });
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<Users>();
             }
-            return null;
+            return null;*/
+
+            throw new NotImplementedException();    
+
         }
     }
 }

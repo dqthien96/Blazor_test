@@ -1,28 +1,33 @@
 ﻿@page "/login"
 @using Library_Management.Components.Models;
+@using Library_Management.Components.Service
+@inject IUserService UserService;
 
-<h1>Login</h1>
 
-@if (ErrorMessage != null)
-{
-    <p>@ErrorMessage</p>
-}
+<div class="mainlayout">
+    <h1>Login</h1>
 
-<form @onsubmit="SubmitForm">
-    <label>Username:</label>
-    <input type="text" @bind="Username" /><br />
-    <label>Password:</label>
-    <input type="password" @bind="Password" /><br />
-    <button type="submit">Login</button>
-</form>
+    @if (ErrorMessage != null)
+    {
+        <p>@ErrorMessage</p>
+    }
+
+    <form @onsubmit="SubmitForm">
+        <label>Username:</label>
+        <input type="text" @bind="Username" /><br />
+        <label>Password:</label>
+        <input type="password" @bind="Password" /><br />
+        <button type="submit">Login</button>
+    </form>
+</div>
+
 
 @code {
     private string Username { get; set; }
     private string Password { get; set; }
     private string ErrorMessage { get; set; }
 
-    [Inject]
-    private Service.UserService UserService { get; set; }
+
 
     private async Task SubmitForm()
     {
