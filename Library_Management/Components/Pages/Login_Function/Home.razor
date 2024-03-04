@@ -1,0 +1,106 @@
+﻿@page "/"
+@using Library_Management.Components.Data
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject BookDbcontext bookdbcontext
+@inject NavigationManager navigationManager
+
+
+
+<PageTitle>Home</PageTitle>
+
+
+@* div main *@
+<div class="mainlayout">
+    @* div Card main *@
+    <div class="login_box">
+        <div class="card" style="width: 28rem; height: 50 rem;">
+
+            @*Logo*@
+            <div>
+                <img src="../Image/logo.png" class="logo" />
+            </div> @*Logo*@
+            <br />
+
+            <!-- Pills content -->
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+                    <EditForm Model="@user" OnValidSubmit="Authenticate" FormName="Login_form">
+                        <DataAnnotationsValidator />
+                        <!-- Username input -->
+                        <div class="form-outline mb-4">
+                            <InputText @bind-Value="user.Username" type="text" class="form-control" />
+                            <ValidationMessage For="() => user.Username" />
+                            <label>username</label>
+                        </div>
+
+                        <!-- Password input -->
+                        <div class="form-outline mb-4">
+                            <InputText @bind-Value="user.Password" type="password" class="form-control" />
+                            <ValidationMessage For="() => user.Password" />
+                            <label>Password</label>
+                        </div>
+
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+
+                        <!-- Register buttons -->
+                        <div class="text-center">
+                            <p>Not a member? <a href="#!">Register</a></p>
+                        </div>
+
+                        <!-- Error -->
+                        <div>
+                            <span>
+                                @error
+                            </span>
+                            
+                        </div>
+
+
+                    </EditForm>
+                </div>
+            </div>
+            <!-- Pills content -->
+        </div>
+    </div> @* div Card main *@
+</div> @* div main *@
+
+
+@code {
+    [CascadingParameter]
+    public HttpContext? HttpContext{ get; set; }
+
+    [SupplyParameterFromForm]
+    public Users user { get; set; } = new();
+
+    private string? error;
+
+    //Authentication
+    private async Task Authenticate()
+    {
+        var user_account = bookdbcontext.Users.Where(x => x.Username == user.Username).FirstOrDefault();
+        if (user_account is null || user_account.Password != user.Password)
+        {
+            error = "Invalid ID or Password";
+            return;
+        }
+
+        //System.Security.Claims
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user_account.Role)
+        };
+        var indentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(indentity);
+        await HttpContext.SignInAsync(principal);
+       // navigationManager.NavigateTo("/Dashboard");
+        navigationManager.NavigateTo("/weather");
+ 
+
+    }
+
+}

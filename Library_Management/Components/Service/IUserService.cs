@@ -4,6 +4,11 @@ namespace Library_Management.Components.Service
 {
     public interface IUserService
     {
-        Task<Users> LoginAsync(string username, string password);
+
+        
+        //get all book
+        Task<List<Books>> Getbooklist();
+
+
     }
 }

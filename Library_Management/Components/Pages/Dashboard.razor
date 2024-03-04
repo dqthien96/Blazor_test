@@ -2,46 +2,77 @@
 @using Library_Management.Components.Layout
 @layout Dashboardlayout
 @rendermode InteractiveServer
+@inject IUserService UserService
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+
 
 <PageTitle>Dashboard</PageTitle>
 
+<AuthorizeView>
+    <Authorized>
+        @* main menu *@
+        <div class="mainmenu">
 
-@* main menu *@
-<div class="mainmenu">
+            @* Seach book *@
+            <div>
+            </div>
+            @* read data from database and show them to table *@
+            <div>
+                <table class="table table-bordered">
+                    <thead>
+                        @* header *@
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Publisher</th>
+                            <th>PublishedDate</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Available</th>
+                        </tr>
+                    </thead>
 
-    @* Seach book *@
-    <div>
+                    <tbody>
+                        @* body *@
+                        @foreach (var book in booklist)
+                        {
+                            <tr>
+                                <td>@book.Title</td>
+                                <td>@book.Author</td>
+                                <td>@book.Publisher</td>
+                                <td>@book.PublishedDate</td>
+                                <td>@book.Category</td>
+                                <td>@book.Description</td>
+                                <td>
+                                    @if (book.Available == true)
+                                    {
+                                        <div>Available</div>
+                                    }
+                                    else
+                                    {
+                                        <div>Not Available</div>
+                                    }
+                                </td>
+                            </tr>
+                        }
 
-    </div>
-    @* read data from database and show them to table *@
-    <div> 
-        <table class="table table-bordered">
-            <thead> @* header *@
-                <tr>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Publisher</th>
-                    <th>PublishedDate</th>
-                    <th>Category</th>
-                    <th>Description</th>
-                    <th>Available</th>
-                </tr>
-            </thead>
 
-            <tbody> @* body *@
+                    </tbody>
 
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                </table>
+            </div>@* read data from database and show them to table *@
+        </div> @* main menu *@
+    </Authorized>
+</AuthorizeView>
 
-            </tbody>
 
-        </table>
-    </div>@* read data from database and show them to table *@
-</div> @* main menu *@
+@code {
+
+    // get all book list
+    List<Books> booklist = new List<Books>();
+    protected override async Task OnInitializedAsync()
+    {
+        booklist = await UserService.Getbooklist();
+    }
+}

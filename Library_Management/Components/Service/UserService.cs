@@ -6,24 +6,21 @@ namespace Library_Management.Components.Service
 {
     public class UserService : IUserService
     {
-        private readonly DbContext _dbContext;
+        private readonly BookDbcontext _dbContext;
 
-        public UserService(DbContext dbContext)
+        public UserService(BookDbcontext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public Task<Users> LoginAsync(string username, string password)
+
+
+
+        //Get book list
+        public async Task<List<Books>> Getbooklist()
         {
-          /*  var response = await dbcontext.ge("api/user/login", new { username, password });
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadFromJsonAsync<Users>();
-            }
-            return null;*/
-
-            throw new NotImplementedException();    
-
+            var result = await _dbContext.Books.ToListAsync();
+            return result;
         }
     }
 }

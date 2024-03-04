@@ -10,9 +10,9 @@ namespace Library_Management.Components.Controller
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly Dbcontext _context;
+        private readonly BookDbcontext _context;
 
-        public UserController(Dbcontext context)
+        public UserController(BookDbcontext context)
         {
             _context = context;
         }
