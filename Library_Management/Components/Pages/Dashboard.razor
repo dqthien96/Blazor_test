@@ -1,15 +1,17 @@
 ﻿@page "/Dashboard"
-@using Library_Management.Components.Layout
-@layout Dashboardlayout
+
+
 @rendermode InteractiveServer
+
 @inject IUserService UserService
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin,Member")]
 
 
 <PageTitle>Dashboard</PageTitle>
-
-<AuthorizeView>
+<AuthorizeView Roles="Admin">
     <Authorized>
         @* main menu *@
         <div class="mainmenu">
@@ -25,8 +27,7 @@
                         <tr>
                             <th>Title</th>
                             <th>Author</th>
-                            <th>Publisher</th>
-                            <th>PublishedDate</th>
+                            <th>Publisher</th>    
                             <th>Category</th>
                             <th>Description</th>
                             <th>Available</th>
@@ -41,7 +42,6 @@
                                 <td>@book.Title</td>
                                 <td>@book.Author</td>
                                 <td>@book.Publisher</td>
-                                <td>@book.PublishedDate</td>
                                 <td>@book.Category</td>
                                 <td>@book.Description</td>
                                 <td>
@@ -66,13 +66,24 @@
     </Authorized>
 </AuthorizeView>
 
-
+<AuthorizeView Roles="Member">
+    <Authorized>
+        <div>
+            This is page of user
+        </div>
+    </Authorized>
+</AuthorizeView>
 @code {
 
     // get all book list
     List<Books> booklist = new List<Books>();
     protected override async Task OnInitializedAsync()
     {
+        //getbook list
         booklist = await UserService.Getbooklist();
     }
+
+
+    
+
 }

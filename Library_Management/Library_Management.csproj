@@ -7,14 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Components\Layout\Dashboardlayout.razor.css" />
     <None Remove="Components\Pages\Dashboard.razor.css" />
     <None Remove="Components\Pages\LibraryBookBorrowingForm.razor.css" />
     <None Remove="Components\Pages\Login_Function\Denied.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Components\Layout\Dashboardlayout.razor.css" />
     <Content Include="Components\Pages\Dashboard.razor.css" />
     <Content Include="Components\Pages\LibraryBookBorrowingForm.razor.css" />
     <Content Include="Components\Pages\Login_Function\Denied.razor.css" />

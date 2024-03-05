@@ -1,10 +1,12 @@
 ﻿@page "/"
 @using Library_Management.Components.Data
 @using System.Security.Claims
+@using Library_Management.Components.Layout
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies
 @inject BookDbcontext bookdbcontext
 @inject NavigationManager navigationManager
+
 
 
 
@@ -56,7 +58,7 @@
                             <span>
                                 @error
                             </span>
-                            
+
                         </div>
 
 
@@ -70,8 +72,10 @@
 
 
 @code {
+
     [CascadingParameter]
-    public HttpContext? HttpContext{ get; set; }
+    public HttpContext? HttpContext { get; set; }
+
 
     [SupplyParameterFromForm]
     public Users user { get; set; } = new();
@@ -97,10 +101,13 @@
         var indentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(indentity);
         await HttpContext.SignInAsync(principal);
-       // navigationManager.NavigateTo("/Dashboard");
-        navigationManager.NavigateTo("/weather");
- 
+        navigationManager.NavigateTo("/Dashboard");
+
+
 
     }
+
+
+
 
 }

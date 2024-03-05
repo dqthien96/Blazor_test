@@ -1,10 +1,24 @@
 ﻿@page "/logout"
-@using Library_Management.Components.Layout
-@layout Dashboardlayout;
+@using Microsoft.AspNetCore.Authentication
+@inject NavigationManager navigationManager
+
 <div>
-
+    You have logged out of the system, please log in to use the feature
 </div>
-
+<a href="">Please click here to return to the login page</a>
 @code {
 
+    [CascadingParameter]
+    public HttpContext? Httpcontext { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (Httpcontext.User.Identity.IsAuthenticated)
+        {
+            await Httpcontext.SignOutAsync();
+            navigationManager.NavigateTo("/logout", true);
+        }
+
+    }
 }
