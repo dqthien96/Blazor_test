@@ -1,0 +1,113 @@
+﻿@page "/BookC&U"
+@page "/BookC&U/{Id:int}"
+@using Microsoft.AspNetCore.Authorization
+@inject NavigationManager navigationManager
+@inject IUserService UserService
+@attribute [Authorize(Roles = "Admin")]
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+
+@if (Id is null)
+{
+    <PageTitle>New Book</PageTitle>
+
+
+    //add new book form
+
+
+}
+else
+{
+    <PageTitle>Edit Book</PageTitle>
+}
+
+@* //add new book form // edits form *@
+<div class="addbook_form">
+    <AuthorizeView Roles="Admin" Context="authContext">
+        <Authorized>
+            <div class="Title_page">BOOK FORM</div>
+            <div class="addbook_form_body">
+                <EditForm OnSubmit="HandleSubmit" Model="@currentbook">
+                    <div class="form-outline mb-4">
+                        <label>Title</label>
+                        <InputText @bind-Value="currentbook.Title" type="text" class="form-control" />
+
+                        <label>Author</label>
+                        <InputText @bind-Value="currentbook.Author" type="text" class="form-control" />
+
+                        <label>Publisher</label>
+                        <InputText @bind-Value="currentbook.Publisher" type="text" class="form-control" />
+
+                        <label>PublishedDate</label>
+                        <InputDate @bind-Value="currentbook.PublishedDate" @bind-Value:format="dd/MM/yyyy" class="form-control" />
+
+                        <label>Category</label>
+                        <InputSelect  @bind-Value="currentbook.Category" class="form-select" aria-label="Default select example">
+                            <option selected>Open this select menu</option>
+                            @foreach (var category in Categorylist)
+                            {
+                                <option value="@category.Name">@category.Name</option>
+                            }
+                        </InputSelect>
+
+
+                        <div class="mb-3">
+                            <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+                            <textarea @bind="currentbook.Description" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </EditForm>
+            </div>
+        </Authorized>
+    </AuthorizeView>
+</div>
+
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    
+
+    public Books currentbook { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id is not null)
+        {
+            var editbook = await UserService.Getbookbyid((int)Id);
+            if (editbook is not null)
+                currentbook = editbook;
+        }
+    }
+
+
+    //get all Category
+    List<Categories> Categorylist = new List<Categories>();
+    protected override async Task OnInitializedAsync()
+    {
+        //getbook list
+        Categorylist = await UserService.GetCategorylist();
+    }
+
+
+
+    //add book function
+    async Task HandleSubmit()
+    {
+        if (Id is not null)
+        {
+            //update
+            await UserService.Updatenewbook(currentbook, (int)Id);
+            navigationManager.NavigateTo("/BookManagement");
+        }
+        else
+        {
+            //add book
+            currentbook.Available = true;
+            await UserService.Addnewbook(currentbook);
+            navigationManager.NavigateTo("/BookManagement");
+        }
+    }
+}

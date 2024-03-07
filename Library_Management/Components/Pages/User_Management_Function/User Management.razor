@@ -1,0 +1,109 @@
+﻿@page "/UserManagement"
+
+@using Library_Management.Components.Layout
+@using Microsoft.AspNetCore.Authorization
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject IUserService UserService
+@attribute [Authorize(Roles = "Admin")]
+@inject NavigationManager navigationManager
+
+<PageTitle>User Management</PageTitle>
+
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <div class="mainpage">
+
+            <h1>User Management</h1>
+            @if (userlist == null || userlist.Count == 0)
+            {
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            }
+            else
+            {
+                <button class="btn btn-success" @onclick="Createuser">Add new User</button>
+
+                @* read data from database and show them to table *@
+                <div>
+                    <table class="table table-bordered">
+                        <thead>
+                            @* header *@
+                            <tr>
+                                <th>Id</th>
+                                <th>Username</th>
+                                <th>FullName</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @* body *@
+                            @foreach (var user in userlist)
+                            {
+                                <tr>
+                                    <td>@user.Id</td>
+                                    <td>@user.Username</td>
+                                    <td>@user.FullName</td>
+                                    <td>@user.Email</td>
+                                    <td>@user.Role</td>
+                             
+                                    <td>
+                                        <button class="btn btn-primary" @onclick="@(() => Edituser(user.Id))">Edit</button>
+
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger" @onclick="@(() => Deleteuser(user.Id))">Delete</button>
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div> @* read data from database and show them to table *@
+  
+
+            }
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+
+
+    // get all book list
+    List<Users>? userlist = new List<Users>();
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(500);
+        //getbook list
+        userlist = await UserService.Getuserlist();
+    }
+
+    //event Create, Update and Delete
+    void Edituser(int id)
+    {
+        navigationManager.NavigateTo($"/UserManagement_CUD/{id}");
+    }
+
+
+    void Createuser()
+    {
+        navigationManager.NavigateTo("/UserManagement_CUD");
+    }
+
+
+    async Task Deleteuser(int id)
+    {
+        await UserService.Deletenewuser(id);
+        navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+
+    }
+
+
+}

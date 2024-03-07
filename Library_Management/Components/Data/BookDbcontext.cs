@@ -11,8 +11,10 @@
         public BookDbcontext(DbContextOptions<BookDbcontext> options) : base(options)
         {
         }
-         public DbSet<Books> Books { get; set; }
+        public DbSet<Books> Books { get; set; }
         public DbSet<Users> Users { get; set; }
+        public DbSet<Categories> Categories { get; set; }
+        
     }
 
 }

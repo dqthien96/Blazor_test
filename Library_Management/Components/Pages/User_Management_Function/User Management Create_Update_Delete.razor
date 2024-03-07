@@ -1,0 +1,92 @@
+﻿@page "/UserManagement_CUD"
+@page "/UserManagement_CUD/{Id:int}"
+@using Microsoft.AspNetCore.Authorization
+@inject NavigationManager navigationManager
+@inject IUserService UserService
+@attribute [Authorize(Roles = "Admin")]
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+
+@if (Id is null)
+{
+    <PageTitle>New User</PageTitle>
+    //add new book form
+}
+else
+{
+    <PageTitle>Edit User</PageTitle>
+}
+
+@* //add new form // edits form *@
+<div class="add_form">
+    <AuthorizeView Roles="Admin" Context="authContext">
+        <Authorized>
+            <div class="Title_page">User FORM</div>
+            <div class="addbook_form_body">
+                <EditForm OnSubmit="HandleSubmit" Model="@currentuser">
+                    <div class="form-outline mb-4">
+                        <label>Username</label>
+                        <InputText @bind-Value="currentuser.Username" type="text" class="form-control" />
+
+                        <label>Password</label>
+                        <InputText @bind-Value="currentuser.Password" type="text" class="form-control" />
+
+                        <label>Full Name</label>
+                        <InputText @bind-Value="currentuser.FullName" type="text" class="form-control" />
+
+                        <label>Email</label>
+                        <InputText @bind-Value="currentuser.Email" @bind-Value:format="dd/MM/yyyy" class="form-control" />
+
+                        <label>Role</label>
+                        <InputSelect @bind-Value="currentuser.Role" class="form-select" aria-label="Default select example">
+                            <option selected>Open this select menu</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Member">Member</option>
+                             
+                        </InputSelect>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </EditForm>
+            </div>
+        </Authorized>
+    </AuthorizeView>
+</div>
+
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+
+    [SupplyParameterFromForm]
+    public Users currentuser { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id is not null)
+        {
+            var edituser = await UserService.Getuserbyid((int)Id);
+            if (edituser is not null)
+                currentuser = edituser;
+        }
+    }
+
+
+    //add function
+    async Task HandleSubmit()
+    {
+        if (Id is not null)
+        {
+            //update
+            await UserService.Updatenewuser(currentuser, (int)Id);
+            navigationManager.NavigateTo("/UserManagement");
+        }
+        else
+        {
+            //add
+   
+            await UserService.Addnewuser(currentuser);
+            navigationManager.NavigateTo("/UserManagement");
+        }
+    }
+}

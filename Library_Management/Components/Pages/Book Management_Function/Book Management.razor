@@ -1,0 +1,117 @@
+﻿@page "/BookManagement"
+
+
+@using Library_Management.Components.Layout
+@using Microsoft.AspNetCore.Authorization
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject IUserService UserService
+@attribute [Authorize(Roles = "Admin")]
+@inject NavigationManager navigationManager
+
+<PageTitle>Book Management</PageTitle>
+
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <div class="mainpage">
+
+            <h1>Book Management</h1>
+            @if (booklist == null || booklist.Count == 0)
+            {
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            }
+            else
+            {
+                <button class="btn btn-success" @onclick = "Createbook">Add new Book</button>
+
+                @* read data from database and show them to table *@
+                <div>
+                    <table class="table table-bordered">
+                        <thead>
+                            @* header *@
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Publisher</th>
+                                <th>PublishedDate</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @* body *@
+                            @foreach (var book in booklist)
+                            {
+                                <tr>
+                                    <td>@book.Id</td>
+                                    <td>@book.Title</td>
+                                    <td>@book.Author</td>
+                                    <td>@book.Publisher</td>
+                                    <td>@book.PublishedDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@book.Category</td>
+                                    <td>@book.Description</td>
+                                    <td>
+                                        <button class="btn btn-primary" @onclick="@(() => Editbook(book.Id))">Edit</button>
+
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger" @onclick="@(() => Deletebook(book.Id))" >Delete</button>
+                                    </td>
+
+                                </tr>
+                            }
+
+
+                        </tbody>
+
+                    </table>
+
+
+                </div>
+                @* read data from database and show them to table *@
+
+
+
+            }
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+
+
+    // get all book list
+    List<Books>? booklist = new List<Books>();
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(500);
+        //getbook list
+        booklist = await UserService.Getbooklist();
+    }
+
+    //event Create, Update and Delete
+    void Editbook(int id)
+    {
+        navigationManager.NavigateTo($"/BookC&U/{id}");
+    }
+
+
+    void Createbook()
+    {
+        navigationManager.NavigateTo("/BookC&U");
+    }
+
+
+    async Task Deletebook(int id)
+    {
+        await UserService.Deletenewbook(id);
+        navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+
+    }
+
+
+}
