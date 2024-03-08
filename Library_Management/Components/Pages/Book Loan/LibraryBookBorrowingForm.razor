@@ -1,0 +1,109 @@
+﻿@page "/Bookloan"
+@using Microsoft.AspNetCore.Authorization
+@inject NavigationManager navigationManager
+@inject IUserService UserService
+@attribute [Authorize(Roles = "Member")]
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+
+<Chose_modal></Chose_modal>
+<div class="addbook_form">
+    <div class="Title_page">BOOK LOAN</div>
+    <div class="addbook_form_body">
+        <AuthorizeView Roles="Member">
+            <Authorized>
+                <div>
+                    @* main menu *@
+                    <div class="mainmenu">
+
+                        @* Seach book *@
+                        <div>
+                        </div>
+                        @* read data from database and show them to table *@
+                        <div>
+                            <table class="table table-bordered">
+                                <thead>
+                                    @* header *@
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Author</th>
+                                        <th>Publisher</th>
+                                        <th>Category</th>
+                                        <th>Description</th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @* body *@
+                                    @foreach (var book in booklistAvailable)
+                                    {
+                                        <tr>
+                                            <td>@book.Title</td>
+                                            <td>@book.Author</td>
+                                            <td>@book.Publisher</td>
+                                            <td>@book.Category</td>
+                                            <td>@book.Description</td>
+                                            <td>
+                                                <button class="btn btn-primary" @onclick="@(() => HandleSubmit(book.Id))">Loan Book</button>
+
+                                            </td>
+
+
+                                        </tr>
+                                    }
+
+                                </tbody>
+
+                            </table>
+                        </div>@* read data from database and show them to table *@
+                    </div> @* main menu *@
+                </div>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+</div>
+
+
+
+
+@code {
+
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+
+    public BorrowingRecords currentbook { get; set; } = new();
+
+
+    // get all book list
+    List<Books> booklist = new List<Books>();
+    List<Books> booklistAvailable = new List<Books>();
+    protected override async Task OnInitializedAsync()
+    {
+        //getbook list
+        booklist = await UserService.Getbooklist(0);
+
+
+        //get Available List
+        booklistAvailable = await UserService.GetbooklistAvailable();
+
+
+
+    }
+
+
+    async Task HandleSubmit(int id)
+    {
+        var authenticationState = await authenticationStateTask; 
+        //add
+
+        await UserService.Addbookloan(currentbook, authenticationState.User.Identity.Name);
+        navigationManager.NavigateTo($"/Chosedate_CUD/{id}");
+
+    }
+
+
+
+}

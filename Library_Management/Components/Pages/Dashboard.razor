@@ -1,6 +1,6 @@
 ﻿@page "/Dashboard"
-
-
+@inject IJSRuntime JSRuntime
+@inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
 @inject IUserService UserService
@@ -14,76 +14,179 @@
 <AuthorizeView Roles="Admin">
     <Authorized>
         @* main menu *@
-        <div class="mainmenu">
+        <div>
+            @* main menu *@
+            <div class="mainmenu">
 
-            @* Seach book *@
-            <div>
-            </div>
-            @* read data from database and show them to table *@
-            <div>
-                <table class="table table-bordered">
-                    <thead>
-                        @* header *@
-                        <tr>
-                            <th>Title</th>
-                            <th>Author</th>
-                            <th>Publisher</th>    
-                            <th>Category</th>
-                            <th>Description</th>
-                            <th>Available</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @* body *@
-                        @foreach (var book in booklist)
-                        {
+                @* Seach book *@
+                <div class="form-group">
+                    <input class="form-control" type="text" placeholder="Filter..."
+                           @bind="Filter"
+                           @bind:event="oninput">
+                </div>
+                @* read data from database and show them to table *@
+                <div>
+                    <table class="table table-bordered">
+                        <thead>
+                            @* header *@
                             <tr>
-                                <td>@book.Title</td>
-                                <td>@book.Author</td>
-                                <td>@book.Publisher</td>
-                                <td>@book.Category</td>
-                                <td>@book.Description</td>
-                                <td>
-                                    @if (book.Available == true)
-                                    {
-                                        <div>Available</div>
-                                    }
-                                    else
-                                    {
-                                        <div>Not Available</div>
-                                    }
-                                </td>
+                                <th>User ID</th>
+                                <th>Book ID</th>
+                                <th>Title</th>
+                                <th>Borrowed Date</th>
+                                <th>DueDate</th>
+
                             </tr>
-                        }
+                        </thead>
+
+                        <tbody>
+                            @* body *@
+                            @foreach (var book in borrowingRecord)
+                            {
+                                if (!IsVisible(book))
+                                    continue;
+                                <tr>
+                                    <td>@book.UserId</td>
+                                    <td>@book.BookId</td>
+                                    <td></td>
+                                    <td>@book.BorrowedDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@book.DueDate.ToString("dd/MM/yyyy")</td>
+
+                                    <td>
+                                        <button class="btn btn-primary" @onclick="@(() => HandleSubmit(book.Id))">Checkout Book</button>
+
+                                    </td>
+                                </tr>
 
 
-                    </tbody>
+                            }
 
-                </table>
-            </div>@* read data from database and show them to table *@
-        </div> @* main menu *@
+                        </tbody>
+
+                    </table>
+                </div>@* read data from database and show them to table *@
+            </div> @* main menu *@
+        </div>
     </Authorized>
 </AuthorizeView>
 
 <AuthorizeView Roles="Member">
     <Authorized>
         <div>
-            This is page of user
+            @* main menu *@
+            <div class="mainmenu">
+
+                @* Seach book *@
+                <div>
+                </div>
+                @* read data from database and show them to table *@
+                <div>
+                    <table class="table table-bordered">
+                        <thead>
+                            @* header *@
+                            <tr>
+                                <th>User ID</th>
+                                <th>Book ID</th>
+                                <th>Title</th>
+                                <th>Borrowed Date</th>
+                                <th>DueDate</th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @* body *@
+                            @foreach (var book in borrowingRecord)
+                            {
+                                if (!IsVisible(book))
+                                    continue;
+                                <tr>
+                                    <td>@book.UserId</td>
+                                    <td>@book.BookId</td>
+                                    <td></td>
+                                    <td>@book.BorrowedDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@book.DueDate.ToString("dd/MM/yyyy")</td>
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+                </div>@* read data from database and show them to table *@
+            </div> @* main menu *@
         </div>
     </Authorized>
 </AuthorizeView>
 @code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    public string Filter { get; set; }
+
+    public bool IsVisible(BorrowingRecords borrowingRecords)
+    {
+        if (string.IsNullOrEmpty(Filter))
+            return true;
+
+        // if (borrowingRecords.BookTitle.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+        //     return true;
+
+        if (borrowingRecords.UserId.ToString().StartsWith(Filter))
+            return true;
+
+        return false;
+    }
 
     // get all book list
     List<Books> booklist = new List<Books>();
+    List<Books> booklistAvailable = new List<Books>();
+    List<BorrowingRecords> borrowingRecord = new List<BorrowingRecords>();
+
+    public BorrowingRecords currentbook { get; set; } = new();
+    public DateTime currentDate { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
+
+        var authenticationState = await authenticationStateTask;
+
+        //get Available List
+        booklistAvailable = await UserService.GetbooklistAvailable();
+
+        borrowingRecord = await UserService.Getloanbooklist(authenticationState.User.Identity.Name);
         //getbook list
-        booklist = await UserService.Getbooklist();
+        booklist = await UserService.Getbooklist(0);
     }
 
 
-    
+    async Task<string> Booktitle(int? id)
+    {
+
+        var bookList = await UserService.Getbooklist(id);
+
+        var bookTitles = bookList.Select(bookInfo => bookInfo.Title);
+        string concatenatedTitles = string.Join(", ", bookTitles);
+        return  concatenatedTitles;
+    }
+
+
+    protected override void OnInitialized()
+    {
+        currentDate = DateTime.Now;
+    }
+
+
+    async Task HandleSubmit(int id)
+    {
+        var authenticationState = await authenticationStateTask;
+
+        //add
+        await UserService.UpdateReturnedDate(currentbook,id);
+        navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+     }
+
 
 }

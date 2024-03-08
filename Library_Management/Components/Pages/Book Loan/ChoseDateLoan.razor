@@ -1,0 +1,62 @@
+﻿@page "/Chosedate_CUD"
+@page "/Chosedate_CUD/{Id:int}"
+@using Microsoft.AspNetCore.Authorization
+@inject NavigationManager navigationManager
+@inject IUserService UserService
+@attribute [Authorize(Roles = "Member")]
+@rendermode InteractiveServer
+
+
+<div class="addbook_form">
+    <AuthorizeView Roles="Member" Context="authContext">
+        <Authorized>
+            <div class="Title_page">CHOSE DATE</div>
+            <div class="addbook_form_body">
+                <EditForm OnSubmit="HandleSubmit" Model="@currentbook">
+                    <div class="form-outline mb-4">
+                        <label>Title</label>
+                        <InputDate TValue="DateTime" @bind-Value="currentbook.DueDate" @bind-Value:format="dd/MM/yyyy" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </EditForm>
+            </div>
+        </Authorized>
+    </AuthorizeView>
+</div>
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    public DateTime currentDate { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+
+
+    public BorrowingRecords currentbook { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        currentDate = DateTime.Now;
+    }
+
+    async Task HandleSubmit()
+    {
+        if (Id is not null)
+        {
+            var authenticationState = await authenticationStateTask;
+            
+
+            //add
+            currentbook.BookId = Id;
+            currentbook.BorrowedDate = currentDate;
+            await UserService.Addbookloan(currentbook, authenticationState.User.Identity.Name);
+            navigationManager.NavigateTo("/Dashboard");
+        }
+        else
+        {
+        }
+    }
+
+}

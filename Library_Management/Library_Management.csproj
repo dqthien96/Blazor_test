@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Components\Pages\Book Loan\ChoseDateLoan.razor.css" />
+    <None Remove="Components\Pages\Book Management_Function\Bookcheckout.razor.css" />
     <None Remove="Components\Pages\Dashboard.razor.css" />
     <None Remove="Components\Pages\Login_Function\Denied.razor.css" />
     <None Remove="Components\Pages\Login_Function\Register.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Components\Pages\Book Loan\ChoseDateLoan.razor.css" />
     <Content Include="Components\Pages\Dashboard.razor.css" />
     <Content Include="Components\Pages\Login_Function\Denied.razor.css" />
     <Content Include="Components\Pages\Login_Function\Register.razor.css" />

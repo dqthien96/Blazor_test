@@ -7,7 +7,7 @@ namespace Library_Management.Components.Service
 
         //book funtion
         //get all book
-        Task<List<Books>> Getbooklist();
+        Task<List<Books>> Getbooklist(int? id);
         Task Addnewbook(Books books);
         Task<Books> Getbookbyid(int id);
         Task Updatenewbook(Books books, int id);
@@ -23,6 +23,12 @@ namespace Library_Management.Components.Service
         Task<Users> Getuserbyid(int id);
         Task Updatenewuser(Users users, int id);
         Task Deletenewuser(int id);
-        Task Registernewaccount(Users users);
+        Task<List<Books>> GetbooklistAvailable();
+        Task Addbookloan(BorrowingRecords borrowingRecords, String Username);
+
+
+        //BorrowingRecords function
+        Task<List<BorrowingRecords>> Getloanbooklist(String Username);
+        Task UpdateReturnedDate(BorrowingRecords books, int id);
     }
 }

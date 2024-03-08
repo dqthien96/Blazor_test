@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Authorization
 @inject NavigationManager navigationManager
 @inject IUserService UserService
-@attribute [Authorize(Roles = "Admin")]
+@* @attribute [Authorize(Roles = "Admin")] *@
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 
@@ -49,6 +49,27 @@ else
                 </EditForm>
             </div>
         </Authorized>
+        <NotAuthorized>
+            <div class="Title_page">User FORM</div>
+            <div class="addbook_form_body">
+                <EditForm OnSubmit="HandleSubmit" Model="@currentuser">
+                    <div class="form-outline mb-4">
+                        <label>Username</label>
+                        <InputText @bind-Value="currentuser.Username" type="text" class="form-control" />
+
+                        <label>Password</label>
+                        <InputText @bind-Value="currentuser.Password" type="text" class="form-control" />
+
+                        <label>Full Name</label>
+                        <InputText @bind-Value="currentuser.FullName" type="text" class="form-control" />
+
+                        <label>Email</label>
+                        <InputText @bind-Value="currentuser.Email" @bind-Value:format="dd/MM/yyyy" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </EditForm>
+            </div>
+        </NotAuthorized>
     </AuthorizeView>
 </div>
 
@@ -79,14 +100,14 @@ else
         {
             //update
             await UserService.Updatenewuser(currentuser, (int)Id);
-            navigationManager.NavigateTo("/UserManagement");
+            navigationManager.NavigateTo("/UserManagement", forceLoad: true);
         }
         else
         {
             //add
-   
+            currentuser.Role = "Member";
             await UserService.Addnewuser(currentuser);
-            navigationManager.NavigateTo("/UserManagement");
+            navigationManager.NavigateTo("/UserManagement", forceLoad: true);
         }
     }
 }
