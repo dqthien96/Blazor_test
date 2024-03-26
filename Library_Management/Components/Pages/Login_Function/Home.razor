@@ -78,14 +78,14 @@
 
 
     [SupplyParameterFromForm]
-    public Users user { get; set; } = new();
+    public User user { get; set; } = new();
 
     private string? error;
 
     //Authentication
     private async Task Authenticate()
     {
-        var user_account = bookdbcontext.Users.Where(x => x.Username == user.Username).FirstOrDefault();
+        var user_account = bookdbcontext.User.Where(x => x.Username == user.Username).FirstOrDefault();
         if (user_account is null || user_account.Password != user.Password)
         {
             error = "Invalid ID or Password";

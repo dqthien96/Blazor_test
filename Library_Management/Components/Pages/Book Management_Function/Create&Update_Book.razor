@@ -70,13 +70,13 @@ else
 
     
 
-    public Books currentbook { get; set; } = new();
+    public Book currentbook { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (Id is not null)
         {
-            var editbook = await UserService.Getbookbyid((int)Id);
+            var editbook = await UserService.GetBookByIdAsync((int)Id);
             if (editbook is not null)
                 currentbook = editbook;
         }
@@ -84,11 +84,11 @@ else
 
 
     //get all Category
-    List<Categories> Categorylist = new List<Categories>();
+    List<Categorie> Categorylist = new List<Categorie>();
     protected override async Task OnInitializedAsync()
     {
         //getbook list
-        Categorylist = await UserService.GetCategorylist();
+        Categorylist = await UserService.GetCategoryListAsync();
     }
 
 
@@ -99,14 +99,14 @@ else
         if (Id is not null)
         {
             //update
-            await UserService.Updatenewbook(currentbook, (int)Id);
+            await UserService.UpdateNewBookAsync(currentbook, (int)Id);
             navigationManager.NavigateTo("/BookManagement");
         }
         else
         {
             //add book
             currentbook.Available = true;
-            await UserService.Addnewbook(currentbook);
+            await UserService.AddNewBookAsync(currentbook);
             navigationManager.NavigateTo("/BookManagement");
         }
     }

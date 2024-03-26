@@ -34,7 +34,7 @@
 
 
 
-    public BorrowingRecords currentbook { get; set; } = new();
+    public BorrowingRecord currentbook { get; set; } = new();
 
     protected override void OnInitialized()
     {
@@ -51,7 +51,7 @@
             //add
             currentbook.BookId = Id;
             currentbook.BorrowedDate = currentDate;
-            await UserService.Addbookloan(currentbook, authenticationState.User.Identity.Name);
+            await UserService.AddBookLoanAsync(currentbook, authenticationState.User.Identity.Name);
             navigationManager.NavigateTo("/Dashboard");
         }
         else

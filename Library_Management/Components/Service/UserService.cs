@@ -16,17 +16,17 @@ namespace Library_Management.Components.Service
 
 
         //Get book list
-        public async Task<List<Books>> Getbooklist(int? id)
+        public async Task<List<Book>> GetBookListAsync(int? id)
         {
             if (id == 0)
             {
-                var result = await _dbContext.Books
+                var result = await _dbContext.Book
                 .OrderByDescending(Books => Books.Id).ToListAsync();
                 return result;
             }
             else
             {
-                var result = await _dbContext.Books
+                var result = await _dbContext.Book
                 .Where(Books => Books.Id == id)
                .OrderByDescending(Books => Books.Id).ToListAsync();
                 return result;
@@ -36,53 +36,53 @@ namespace Library_Management.Components.Service
 
 
         //Create new book
-        public async Task Addnewbook(Books books)
+        public async Task AddNewBookAsync(Book book)
         {
-            _dbContext.Books.Add(books);
+            _dbContext.Book.Add(book);
             await _dbContext.SaveChangesAsync();
         }
 
         //Update book info
-        public async Task Updatenewbook(Books books, int id)
+        public async Task UpdateNewBookAsync(Book book, int id)
         {
-            var result_update = await _dbContext.Books.FindAsync(id);
-            if (result_update != null)
+            var resultUpdate = await _dbContext.Book.FindAsync(id);
+            if (resultUpdate != null)
             {
-                result_update.Title = books.Title;
-                result_update.Author = books.Author;
-                result_update.Publisher = books.Publisher;
-                result_update.PublishedDate = books.PublishedDate;
-                result_update.Category = books.Category;
-                result_update.Description = books.Description;
-                result_update.Available = books.Available;
+                resultUpdate.Title = book.Title;
+                resultUpdate.Author = book.Author;
+                resultUpdate.Publisher = book.Publisher;
+                resultUpdate.PublishedDate = book.PublishedDate;
+                resultUpdate.Category = book.Category;
+                resultUpdate.Description = book.Description;
+                resultUpdate.Available = book.Available;
                 await _dbContext.SaveChangesAsync();
 
             }
         }
 
         //Delete book
-        public async Task Deletenewbook(int id)
+        public async Task DeleteNewBookAsync(int id)
         {
-            var result = await _dbContext.Books.FindAsync(id);
+            var result = await _dbContext.Book.FindAsync(id);
             if (result != null)
             {
-                _dbContext.Books.Remove(result);
+                _dbContext.Book.Remove(result);
                 await _dbContext.SaveChangesAsync();
             }
         }
 
         //get book by ID
-        public async Task<Books> Getbookbyid(int id)
+        public async Task<Book> GetBookByIdAsync(int id)
         {
-            var bookbyid = await _dbContext.Books.FindAsync(id);
+            var bookbyid = await _dbContext.Book.FindAsync(id);
             return bookbyid;
         }
 
 
         //get all Category
-        public async Task<List<Categories>> GetCategorylist()
+        public async Task<List<Categorie>> GetCategoryListAsync()
         {
-            var result = await _dbContext.Categories
+            var result = await _dbContext.Categorie
                 .OrderByDescending(Category => Category.Id).ToListAsync();
             return result;
         }
@@ -91,9 +91,9 @@ namespace Library_Management.Components.Service
         //Register new user account
 
         //Get uesr list
-        public async Task<List<Users>> Getuserlist()
+        public async Task<List<User>> GetUserListAsync()
         {
-            var result = await _dbContext.Users
+            var result = await _dbContext.User
                 .OrderByDescending(Users => Users.Id).ToListAsync();
             return result;
         }
@@ -101,9 +101,9 @@ namespace Library_Management.Components.Service
 
         //Create new user
 
-        public async Task Addnewuser(Users users)
+        public async Task AddNewUserAsync(User users)
         {
-            var existingUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == users.Username);
+            var existingUser = await _dbContext.User.FirstOrDefaultAsync(u => u.Username == users.Username);
 
             if (existingUser != null)
             {
@@ -112,15 +112,15 @@ namespace Library_Management.Components.Service
             else
             {
 
-                _dbContext.Users.Add(users);
+                _dbContext.User.Add(users);
                 await _dbContext.SaveChangesAsync();
             }
         }
 
         //Update user info
-        public async Task Updatenewuser(Users users, int id)
+        public async Task UpdateNewUserAsync(User users, int id)
         {
-            var result_update = await _dbContext.Users.FindAsync(id);
+            var result_update = await _dbContext.User.FindAsync(id);
             if (result_update != null)
             {
 
@@ -130,28 +130,28 @@ namespace Library_Management.Components.Service
         }
 
         //Delete user
-        public async Task Deletenewuser(int id)
+        public async Task DeleteNewUserAsync(int id)
         {
-            var result = await _dbContext.Users.FindAsync(id);
+            var result = await _dbContext.User.FindAsync(id);
             if (result != null)
             {
-                _dbContext.Users.Remove(result);
+                _dbContext.User.Remove(result);
                 await _dbContext.SaveChangesAsync();
             }
         }
 
         //get user by ID
-        public async Task<Users> Getuserbyid(int id)
+        public async Task<User> GetUserByIdAsync(int id)
         {
-            var bookbyid = await _dbContext.Users.FindAsync(id);
+            var bookbyid = await _dbContext.User.FindAsync(id);
             return bookbyid;
         }
 
 
         //select book Available
-        public async Task<List<Books>> GetbooklistAvailable()
+        public async Task<List<Book>> GetBookListAvailableAsync()
         {
-            var result = await _dbContext.Books
+            var result = await _dbContext.Book
                 .Where(Books => Books.Available == true)
                 .OrderByDescending(Books => Books.Id)
                 .ToListAsync();
@@ -160,11 +160,11 @@ namespace Library_Management.Components.Service
 
 
         //loan book
-        public async Task Addbookloan(BorrowingRecords borrowingRecords, String Username)
+        public async Task AddBookLoanAsync(BorrowingRecord borrowingRecords, String Username)
         {
-            var getinfoUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == Username);
+            var getinfoUser = await _dbContext.User.FirstOrDefaultAsync(u => u.Username == Username);
 
-            var newRecord = new BorrowingRecords
+            var newRecord = new BorrowingRecord
             {
                 UserId = getinfoUser.Id,
                 BookId = borrowingRecords.BookId,
@@ -176,7 +176,7 @@ namespace Library_Management.Components.Service
 
 
             //chance staus of book
-            var result_update = await _dbContext.Books.FindAsync(borrowingRecords.BookId);
+            var result_update = await _dbContext.Book.FindAsync(borrowingRecords.BookId);
             if (result_update != null)
             {
                 /*result_update.Available = false;*/
@@ -184,39 +184,39 @@ namespace Library_Management.Components.Service
 
             }
 
-            _dbContext.BorrowingRecords.Add(newRecord);
+            _dbContext.BorrowingRecord.Add(newRecord);
             await _dbContext.SaveChangesAsync();
         }
 
         //get loan book list
-        public async Task<List<BorrowingRecords>> Getloanbooklist(String Username)
+        public async Task<List<BorrowingRecord>> GetLoanBookListAsync(String Username)
         {
             if (Username == "admin")
             {
-                var getinfoUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == Username);
+                var getinfoUser = await _dbContext.User.FirstOrDefaultAsync(u => u.Username == Username);
                 var query = "SELECT BorrowingRecords.Id, BorrowingRecords.BorrowedDate,BorrowingRecords.DueDate,BorrowingRecords.ReturnedDate,BorrowingRecords.Status," +
                 "Books.Id AS BookId, Books.Title AS BookTitle, " +
                 "Users.Id AS UserId, Users.Username AS Username " +
                 "FROM BorrowingRecords " +
                 "INNER JOIN Books ON BorrowingRecords.BookId = Books.Id " +
                 "INNER JOIN Users ON BorrowingRecords.UserId = Users.Id ";
-                var result = await _dbContext.BorrowingRecords
+                var result = await _dbContext.BorrowingRecord
                 .FromSqlRaw(query)
-                .Where(BorrowingRecords => BorrowingRecords.Status == "Normal")
-                .OrderByDescending(BorrowingRecords => BorrowingRecords.Id)
+                .Where(BorrowingRecord => BorrowingRecord.Status == "Normal")
+                .OrderByDescending(BorrowingRecord => BorrowingRecord.Id)
                 .ToListAsync();
                 return result;
             }
             else
             {
-                var getinfoUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == Username);
+                var getinfoUser = await _dbContext.User.FirstOrDefaultAsync(u => u.Username == Username);
                 var query = "SELECT BorrowingRecords.Id, BorrowingRecords.BorrowedDate,BorrowingRecords.DueDate,BorrowingRecords.ReturnedDate,BorrowingRecords.Status," +
                 "Books.Id AS BookId, Books.Title AS BookTitle, " +
                 "Users.Id AS UserId, Users.Username AS Username " +
                 "FROM BorrowingRecords " +
                 "INNER JOIN Books ON BorrowingRecords.BookId = Books.Id " +
                 "INNER JOIN Users ON BorrowingRecords.UserId = Users.Id ";
-                var result = await _dbContext.BorrowingRecords
+                var result = await _dbContext.BorrowingRecord
                 .FromSqlRaw(query)
                 .Where(BorrowingRecords => BorrowingRecords.UserId == getinfoUser.Id)
                 .Where(BorrowingRecords => BorrowingRecords.Status == "Normal")
@@ -228,9 +228,9 @@ namespace Library_Management.Components.Service
         }
 
 
-        public async Task UpdateReturnedDate(BorrowingRecords books, int id)
+        public async Task UpdateReturnedDateAsync(BorrowingRecord books, int id)
         {
-            var result_update = await _dbContext.BorrowingRecords.FindAsync(id);
+            var result_update = await _dbContext.BorrowingRecord.FindAsync(id);
             if (result_update != null)
             {
                 result_update.ReturnedDate = books.ReturnedDate;

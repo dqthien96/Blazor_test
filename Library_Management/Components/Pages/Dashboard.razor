@@ -126,7 +126,7 @@
 
     public string Filter { get; set; }
 
-    public bool IsVisible(BorrowingRecords borrowingRecords)
+    public bool IsVisible(BorrowingRecord borrowingRecords)
     {
         if (string.IsNullOrEmpty(Filter))
             return true;
@@ -141,11 +141,11 @@
     }
 
     // get all book list
-    List<Books> booklist = new List<Books>();
-    List<Books> booklistAvailable = new List<Books>();
-    List<BorrowingRecords> borrowingRecord = new List<BorrowingRecords>();
+    List<Book> booklist = new List<Book>();
+    List<Book> booklistAvailable = new List<Book>();
+    List<BorrowingRecord> borrowingRecord = new List<BorrowingRecord>();
 
-    public BorrowingRecords currentbook { get; set; } = new();
+    public BorrowingRecord currentbook { get; set; } = new();
     public DateTime currentDate { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -154,18 +154,18 @@
         var authenticationState = await authenticationStateTask;
 
         //get Available List
-        booklistAvailable = await UserService.GetbooklistAvailable();
+        booklistAvailable = await UserService.GetBookListAvailableAsync();
 
-        borrowingRecord = await UserService.Getloanbooklist(authenticationState.User.Identity.Name);
+        borrowingRecord = await UserService.GetLoanBookListAsync(authenticationState.User.Identity.Name);
         //getbook list
-        booklist = await UserService.Getbooklist(0);
+        booklist = await UserService.GetBookListAsync(0);
     }
 
 
     async Task<string> Booktitle(int? id)
     {
 
-        var bookList = await UserService.Getbooklist(id);
+        var bookList = await UserService.GetBookListAsync(id);
 
         var bookTitles = bookList.Select(bookInfo => bookInfo.Title);
         string concatenatedTitles = string.Join(", ", bookTitles);
@@ -184,7 +184,7 @@
         var authenticationState = await authenticationStateTask;
 
         //add
-        await UserService.UpdateReturnedDate(currentbook,id);
+        await UserService.UpdateReturnedDateAsync(currentbook,id);
         navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
      }
 

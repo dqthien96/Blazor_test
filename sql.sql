@@ -34,3 +34,19 @@ CREATE TABLE Categories (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(50)
 );
+
+
+async + await đặt hàm cho chuẩn có đuôi async
+đặt tên entity phải đặt theo số ít
+Kiến trúc dự án phần mềm (tìm hiểu thêm)
+Nghiên cứu thên EF core:
+khái niệm: .net identity framwork (công cụ quản lý user)
+tìm hiểu sâu hơn EF Core:
+    + Reach Responsitory
+    + Unit of Work
+tìm hiểu khái niệm Mapping object (Automapper)
+
+Blazor: viết component to be re-Used
+.NET:
+    + Dependence Injection
+    + Reflection

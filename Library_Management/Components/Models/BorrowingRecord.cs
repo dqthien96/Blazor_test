@@ -1,6 +1,6 @@
 ﻿namespace Library_Management.Components.Models
 {
-    public class BorrowingRecords
+    public class BorrowingRecord
     {
         public int Id { get; set; }
         public int? UserId { get; set; }
@@ -10,6 +10,10 @@
         public DateTime? ReturnedDate { get; set; }
         public string? Status { get; set; }
 
+
+        //connect to user and book table
+        public User User { get; set; }
+        public Book Book { get; set; }
 
     
     }

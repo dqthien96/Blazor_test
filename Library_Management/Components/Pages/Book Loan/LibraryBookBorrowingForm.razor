@@ -74,20 +74,20 @@
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
 
-    public BorrowingRecords currentbook { get; set; } = new();
+    public BorrowingRecord currentbook { get; set; } = new();
 
 
     // get all book list
-    List<Books> booklist = new List<Books>();
-    List<Books> booklistAvailable = new List<Books>();
+    List<Book> booklist = new List<Book>();
+    List<Book> booklistAvailable = new List<Book>();
     protected override async Task OnInitializedAsync()
     {
         //getbook list
-        booklist = await UserService.Getbooklist(0);
+        booklist = await UserService.GetBookListAsync(0);
 
 
         //get Available List
-        booklistAvailable = await UserService.GetbooklistAvailable();
+        booklistAvailable = await UserService.GetBookListAvailableAsync();
 
 
 
@@ -99,7 +99,7 @@
         var authenticationState = await authenticationStateTask; 
         //add
 
-        await UserService.Addbookloan(currentbook, authenticationState.User.Identity.Name);
+        await UserService.AddBookLoanAsync(currentbook, authenticationState.User.Identity.Name);
         navigationManager.NavigateTo($"/Chosedate_CUD/{id}");
 
     }

@@ -85,12 +85,12 @@
 
 
     // get all book list
-    List<Books>? booklist = new List<Books>();
+    List<Book>? booklist = new List<Book>();
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(500);
         //getbook list
-        booklist = await UserService.Getbooklist(0);
+        booklist = await UserService.GetBookListAsync(0);
     }
 
     //event Create, Update and Delete
@@ -108,7 +108,7 @@
 
     async Task Deletebook(int id)
     {
-        await UserService.Deletenewbook(id);
+        await UserService.DeleteNewBookAsync(id);
         navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
 
     }

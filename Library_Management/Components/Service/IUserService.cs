@@ -7,28 +7,28 @@ namespace Library_Management.Components.Service
 
         //book funtion
         //get all book
-        Task<List<Books>> Getbooklist(int? id);
-        Task Addnewbook(Books books);
-        Task<Books> Getbookbyid(int id);
-        Task Updatenewbook(Books books, int id);
-        Task Deletenewbook(int id);
+        Task<List<Book>> GetBookListAsync(int? id);
+        Task AddNewBookAsync(Book books);
+        Task<Book> GetBookByIdAsync(int id);
+        Task UpdateNewBookAsync(Book book, int id);
+        Task DeleteNewBookAsync(int id);
 
         //get Category
-        Task<List<Categories>> GetCategorylist();
+        Task<List<Categorie>> GetCategoryListAsync();
 
 
         //user funtion
-        Task<List<Users>> Getuserlist();
-        Task Addnewuser(Users users);
-        Task<Users> Getuserbyid(int id);
-        Task Updatenewuser(Users users, int id);
-        Task Deletenewuser(int id);
-        Task<List<Books>> GetbooklistAvailable();
-        Task Addbookloan(BorrowingRecords borrowingRecords, String Username);
+        Task<List<User>> GetUserListAsync();
+        Task AddNewUserAsync(User user);
+        Task<User> GetUserByIdAsync(int id);
+        Task UpdateNewUserAsync(User users, int id);
+        Task DeleteNewUserAsync(int id);
+        Task<List<Book>> GetBookListAvailableAsync();
+        Task AddBookLoanAsync(BorrowingRecord borrowingRecord, String Username);
 
 
         //BorrowingRecords function
-        Task<List<BorrowingRecords>> Getloanbooklist(String Username);
-        Task UpdateReturnedDate(BorrowingRecords books, int id);
+        Task<List<BorrowingRecord>> GetLoanBookListAsync(String Username);
+        Task UpdateReturnedDateAsync(BorrowingRecord book, int id);
     }
 }
