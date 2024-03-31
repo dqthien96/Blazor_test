@@ -97,9 +97,7 @@
     async Task HandleSubmit(int id)
     {
         var authenticationState = await authenticationStateTask; 
-        //add
-
-        await UserService.AddBookLoanAsync(currentbook, authenticationState.User.Identity.Name);
+        //Navigate to ChoseDateLoan
         navigationManager.NavigateTo($"/Chosedate_CUD/{id}");
 
     }

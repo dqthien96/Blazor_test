@@ -7,7 +7,7 @@
     public class BookDbcontext : DbContext
     {
        
-       // public DbSet<BorrowingRecords> BorrowingRecords { get; set; }
+
         public BookDbcontext(DbContextOptions<BookDbcontext> options) : base(options)
         {
         }

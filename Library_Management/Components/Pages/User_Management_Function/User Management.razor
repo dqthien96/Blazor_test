@@ -82,7 +82,7 @@
     {
         await Task.Delay(500);
         //getbook list
-        userlist = await UserService.Getuserlist();
+        userlist = await UserService.GetUserListAsync();
     }
 
     //event Create, Update and Delete
@@ -100,7 +100,7 @@
 
     async Task Deleteuser(int id)
     {
-        await UserService.Deletenewuser(id);
+        await UserService.DeleteNewUserAsync(id);
         navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
 
     }

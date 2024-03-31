@@ -86,7 +86,7 @@ else
     {
         if (Id is not null)
         {
-            var edituser = await UserService.Getuserbyid((int)Id);
+            var edituser = await UserService.GetUserByIdAsync((int)Id);
             if (edituser is not null)
                 currentuser = edituser;
         }
@@ -99,14 +99,14 @@ else
         if (Id is not null)
         {
             //update
-            await UserService.Updatenewuser(currentuser, (int)Id);
+            await UserService.UpdateNewUserAsync(currentuser, (int)Id);
             navigationManager.NavigateTo("/UserManagement", forceLoad: true);
         }
         else
         {
             //add
             currentuser.Role = "Member";
-            await UserService.Addnewuser(currentuser);
+            await UserService.AddNewUserAsync(currentuser);
             navigationManager.NavigateTo("/UserManagement", forceLoad: true);
         }
     }

@@ -24,7 +24,7 @@ namespace Library_Management.Components.Service
         Task UpdateNewUserAsync(User users, int id);
         Task DeleteNewUserAsync(int id);
         Task<List<Book>> GetBookListAvailableAsync();
-        Task AddBookLoanAsync(BorrowingRecord borrowingRecord, String Username);
+        Task AddBookLoanAsync(BorrowingRecord borrowingRecord, String Username,int BookId);
 
 
         //BorrowingRecords function

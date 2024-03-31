@@ -21,14 +21,14 @@ namespace Library_Management.Components.Service
             if (id == 0)
             {
                 var result = await _dbContext.Book
-                .OrderByDescending(Books => Books.Id).ToListAsync();
+                .OrderByDescending(Book => Book.Id).ToListAsync();
                 return result;
             }
             else
             {
                 var result = await _dbContext.Book
-                .Where(Books => Books.Id == id)
-               .OrderByDescending(Books => Books.Id).ToListAsync();
+                .Where(Book => Book.Id == id)
+               .OrderByDescending(Book => Book.Id).ToListAsync();
                 return result;
             }
 
@@ -152,37 +152,30 @@ namespace Library_Management.Components.Service
         public async Task<List<Book>> GetBookListAvailableAsync()
         {
             var result = await _dbContext.Book
-                .Where(Books => Books.Available == true)
-                .OrderByDescending(Books => Books.Id)
+                .Where(Book => Book.Available == true)
+                .OrderByDescending(Book => Book.Id)
                 .ToListAsync();
             return result;
         }
 
 
         //loan book
-        public async Task AddBookLoanAsync(BorrowingRecord borrowingRecords, String Username)
+        public async Task AddBookLoanAsync(BorrowingRecord BorrowingRecord, String Username, int BookId)
         {
             var getinfoUser = await _dbContext.User.FirstOrDefaultAsync(u => u.Username == Username);
+            var getinfoBook = await _dbContext.Book.FirstOrDefaultAsync(b => b.Id == BookId);
+            // Set BorrowedDate to the current date
+            BorrowingRecord.BorrowedDate = DateTime.Today;
 
             var newRecord = new BorrowingRecord
             {
                 UserId = getinfoUser.Id,
-                BookId = borrowingRecords.BookId,
-                BorrowedDate = borrowingRecords.BorrowedDate,
-                DueDate = borrowingRecords.DueDate,
+                BookId = getinfoBook.Id,
+                BorrowedDate = BorrowingRecord.BorrowedDate,
+                DueDate = BorrowingRecord.DueDate,
                 ReturnedDate = null,
                 Status = "Normal",
             };
-
-
-            //chance staus of book
-            var result_update = await _dbContext.Book.FindAsync(borrowingRecords.BookId);
-            if (result_update != null)
-            {
-                /*result_update.Available = false;*/
-                await _dbContext.SaveChangesAsync();
-
-            }
 
             _dbContext.BorrowingRecord.Add(newRecord);
             await _dbContext.SaveChangesAsync();
@@ -193,47 +186,37 @@ namespace Library_Management.Components.Service
         {
             if (Username == "admin")
             {
-                var getinfoUser = await _dbContext.User.FirstOrDefaultAsync(u => u.Username == Username);
-                var query = "SELECT BorrowingRecords.Id, BorrowingRecords.BorrowedDate,BorrowingRecords.DueDate,BorrowingRecords.ReturnedDate,BorrowingRecords.Status," +
-                "Books.Id AS BookId, Books.Title AS BookTitle, " +
-                "Users.Id AS UserId, Users.Username AS Username " +
-                "FROM BorrowingRecords " +
-                "INNER JOIN Books ON BorrowingRecords.BookId = Books.Id " +
-                "INNER JOIN Users ON BorrowingRecords.UserId = Users.Id ";
                 var result = await _dbContext.BorrowingRecord
-                .FromSqlRaw(query)
-                .Where(BorrowingRecord => BorrowingRecord.Status == "Normal")
-                .OrderByDescending(BorrowingRecord => BorrowingRecord.Id)
+                .Where(record => record.Status == "Normal")
+                .Include(record => record.Book)
+                .Include(record => record.User)
+                .OrderByDescending(record => record.Id)
                 .ToListAsync();
+
                 return result;
             }
             else
             {
                 var getinfoUser = await _dbContext.User.FirstOrDefaultAsync(u => u.Username == Username);
-                var query = "SELECT BorrowingRecords.Id, BorrowingRecords.BorrowedDate,BorrowingRecords.DueDate,BorrowingRecords.ReturnedDate,BorrowingRecords.Status," +
-                "Books.Id AS BookId, Books.Title AS BookTitle, " +
-                "Users.Id AS UserId, Users.Username AS Username " +
-                "FROM BorrowingRecords " +
-                "INNER JOIN Books ON BorrowingRecords.BookId = Books.Id " +
-                "INNER JOIN Users ON BorrowingRecords.UserId = Users.Id ";
                 var result = await _dbContext.BorrowingRecord
-                .FromSqlRaw(query)
-                .Where(BorrowingRecords => BorrowingRecords.UserId == getinfoUser.Id)
-                .Where(BorrowingRecords => BorrowingRecords.Status == "Normal")
-                .OrderByDescending(BorrowingRecords => BorrowingRecords.Id)
+                .Where(record => record.UserId == getinfoUser.Id && record.Status == "Normal")
+                .OrderByDescending(record => record.Id)
+                .Include(record => record.Book)
+                .Include(record => record.User)
                 .ToListAsync();
+
                 return result;
             }
 
         }
 
 
-        public async Task UpdateReturnedDateAsync(BorrowingRecord books, int id)
+        public async Task UpdateReturnedDateAsync(BorrowingRecord Book, int id)
         {
             var result_update = await _dbContext.BorrowingRecord.FindAsync(id);
             if (result_update != null)
             {
-                result_update.ReturnedDate = books.ReturnedDate;
+                result_update.ReturnedDate = Book.ReturnedDate;
                 result_update.Status = "Checkout";
                 await _dbContext.SaveChangesAsync();
 

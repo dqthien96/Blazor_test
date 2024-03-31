@@ -48,7 +48,7 @@
                                 <tr>
                                     <td>@book.UserId</td>
                                     <td>@book.BookId</td>
-                                    <td></td>
+                                    <td>@(book.Book?.Title ?? "Unknown") </td>
                                     <td>@book.BorrowedDate.ToString("dd/MM/yyyy")</td>
                                     <td>@book.DueDate.ToString("dd/MM/yyyy")</td>
 
@@ -98,12 +98,15 @@
                             @* body *@
                             @foreach (var book in borrowingRecord)
                             {
+
+                                
+                             
                                 if (!IsVisible(book))
                                     continue;
                                 <tr>
                                     <td>@book.UserId</td>
                                     <td>@book.BookId</td>
-                                    <td></td>
+                                    <td>@(book.Book?.Title ?? "Unknown")</td>
                                     <td>@book.BorrowedDate.ToString("dd/MM/yyyy")</td>
                                     <td>@book.DueDate.ToString("dd/MM/yyyy")</td>
                                 </tr>

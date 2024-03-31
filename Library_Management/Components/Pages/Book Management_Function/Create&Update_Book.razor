@@ -70,7 +70,7 @@ else
 
     
 
-    public Book currentbook { get; set; } = new();
+    public Book currentbook { get; set; } = new Book {PublishedDate = DateTime.Today};
 
     protected override async Task OnParametersSetAsync()
     {

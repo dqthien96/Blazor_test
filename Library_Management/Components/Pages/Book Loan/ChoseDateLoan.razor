@@ -4,7 +4,7 @@
 @inject NavigationManager navigationManager
 @inject IUserService UserService
 @attribute [Authorize(Roles = "Member")]
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 
 <div class="addbook_form">
@@ -12,12 +12,12 @@
         <Authorized>
             <div class="Title_page">CHOSE DATE</div>
             <div class="addbook_form_body">
-                <EditForm OnSubmit="HandleSubmit" Model="@currentbook">
+                <EditForm Model="@currentbook">
                     <div class="form-outline mb-4">
-                        <label>Title</label>
-                        <InputDate TValue="DateTime" @bind-Value="currentbook.DueDate" @bind-Value:format="dd/MM/yyyy" class="form-control" />
+                        <label>Chose Due Date</label>
+                        <InputDate @bind-Value="currentbook.DueDate" @bind-Value:format="dd/MM/yyyy" class="form-control" />
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-primary" @onclick="HandleSubmit">Submit</button>
                 </EditForm>
             </div>
         </Authorized>
@@ -25,38 +25,20 @@
 </div>
 @code {
     [Parameter]
-    public int? Id { get; set; }
-
-    public DateTime currentDate { get; set; }
-
-    [CascadingParameter]
+    public int Id { get; set; }
+    [CascadingParameter] 
     private Task<AuthenticationState> authenticationStateTask { get; set; }
+    public BorrowingRecord currentbook { get; set; } = new BorrowingRecord { DueDate = DateTime.Today };
 
-
-
-    public BorrowingRecord currentbook { get; set; } = new();
-
-    protected override void OnInitialized()
-    {
-        currentDate = DateTime.Now;
-    }
 
     async Task HandleSubmit()
     {
-        if (Id is not null)
-        {
+        
             var authenticationState = await authenticationStateTask;
-            
-
             //add
-            currentbook.BookId = Id;
-            currentbook.BorrowedDate = currentDate;
-            await UserService.AddBookLoanAsync(currentbook, authenticationState.User.Identity.Name);
+            await UserService.AddBookLoanAsync(currentbook, authenticationState.User.Identity.Name, Id);
             navigationManager.NavigateTo("/Dashboard");
-        }
-        else
-        {
-        }
+         
     }
 
 }
