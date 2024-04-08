@@ -192,7 +192,6 @@ namespace Library_Management.Components.Service
                 .Include(record => record.User)
                 .OrderByDescending(record => record.Id)
                 .ToListAsync();
-
                 return result;
             }
             else
@@ -204,7 +203,6 @@ namespace Library_Management.Components.Service
                 .Include(record => record.Book)
                 .Include(record => record.User)
                 .ToListAsync();
-
                 return result;
             }
 
@@ -219,7 +217,6 @@ namespace Library_Management.Components.Service
                 result_update.ReturnedDate = Book.ReturnedDate;
                 result_update.Status = "Checkout";
                 await _dbContext.SaveChangesAsync();
-
             }
         }
     }

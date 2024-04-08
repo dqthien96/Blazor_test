@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Components\Pages\Book Loan\ChoseDateLoan.razor.css" />
+    <None Remove="Components\Pages\Book Loan_Function\ChoseDateLoan.razor.css" />
     <None Remove="Components\Pages\Book Management_Function\Bookcheckout.razor.css" />
     <None Remove="Components\Pages\Dashboard.razor.css" />
     <None Remove="Components\Pages\Login_Function\Denied.razor.css" />
@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Components\Pages\Book Loan\ChoseDateLoan.razor.css" />
+    <Content Include="Components\Pages\Book Loan_Function\ChoseDateLoan.razor.css" />
     <Content Include="Components\Pages\Dashboard.razor.css" />
     <Content Include="Components\Pages\Login_Function\Denied.razor.css" />
     <Content Include="Components\Pages\Login_Function\Register.razor.css" />
@@ -24,14 +24,18 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.AspNet.Identity.EntityFramework" Version="2.2.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Components\Pages\Statistical_Function\" />
     <Folder Include="wwwroot\Image\" />
   </ItemGroup>
 
